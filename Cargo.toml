@@ -1,5 +1,5 @@
 [package]
-name = "cdumay-result"
+name = "cdumay_result"
 version = "0.1.0"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 license = "MIT"
