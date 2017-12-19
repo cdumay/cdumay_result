@@ -18,7 +18,7 @@ pub fn random_uuid() -> String {
 }
 
 #[derive(Serialize, Deserialize)]
-pub struct Result {
+pub struct ExecutionResult {
     uuid: String,
     retcode: u16,
     stdout: String,
@@ -26,9 +26,9 @@ pub struct Result {
     retval: Map<String, Value>
 }
 
-impl Result {
-    pub fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> Result {
-        Result {
+impl ExecutionResult {
+    pub fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> ExecutionResult {
+        ExecutionResult {
             uuid: uuid.unwrap_or(random_uuid()),
             retcode: retcode.unwrap_or(0),
             stdout: stdout.unwrap_or(String::new()),
@@ -44,7 +44,7 @@ impl Result {
     }
 }
 
-impl fmt::Display for Result {
+impl fmt::Display for ExecutionResult {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self.retcode {
             0 => write!(f, "{}", self.stdout),
@@ -53,16 +53,16 @@ impl fmt::Display for Result {
     }
 }
 
-impl fmt::Debug for Result {
+impl fmt::Debug for ExecutionResult {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Result<recode='{}'>", self.retcode)
     }
 }
 
-impl Add for Result {
-    type Output = Result;
-    fn add(self, other: Result) -> Result {
-        Result {
+impl Add for ExecutionResult {
+    type Output = ExecutionResult;
+    fn add(self, other: ExecutionResult) -> ExecutionResult {
+        ExecutionResult {
             uuid: self.uuid,
             retcode: if self.retcode > other.retcode { self.retcode } else { other.retcode },
             stdout: if other.stdout.len() > 0 { format!("{}\n{}", self.stdout, other.stdout) } else { format!("{}", self.stdout) },
@@ -84,9 +84,9 @@ impl Add for Result {
 }
 
 #[cfg(feature = "cdumay-rest-client")]
-impl From<cdumay_rest_client::exceptions::HTTPException> for Result {
-    fn from(error: cdumay_rest_client::exceptions::HTTPException) -> Result {
-        Result {
+impl From<cdumay_rest_client::exceptions::HTTPException> for ExecutionResult {
+    fn from(error: cdumay_rest_client::exceptions::HTTPException) -> ExecutionResult {
+        ExecutionResult {
             retcode: error.code(),
             uuid: random_uuid(),
             retval: error.extra(),
@@ -98,8 +98,7 @@ impl From<cdumay_rest_client::exceptions::HTTPException> for Result {
 
 #[test]
 fn test() {
-
     let err = cdumay_rest_client::exceptions::HTTPException::new(500, None, None, None);
-    let res = Result::from(err);
+    let res = ExecutionResult::from(err);
     println!("{:?}", res);
 }
