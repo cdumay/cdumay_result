@@ -6,9 +6,6 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
-#[cfg(feature = "cdumay-rest-client")]
-extern crate cdumay_rest_client;
-
 use std::fmt;
 use std::ops::Add;
 use serde_json::{Map, Value};
@@ -23,7 +20,7 @@ pub struct ExecutionResult {
     retcode: u16,
     stdout: String,
     stderr: String,
-    retval: Map<String, Value>
+    retval: Map<String, Value>,
 }
 
 impl ExecutionResult {
@@ -78,27 +75,7 @@ impl Add for ExecutionResult {
                     }
                 }
                 merge
-            }
+            },
         }
     }
-}
-
-#[cfg(feature = "cdumay-rest-client")]
-impl From<cdumay_rest_client::exceptions::HTTPException> for ExecutionResult {
-    fn from(error: cdumay_rest_client::exceptions::HTTPException) -> ExecutionResult {
-        ExecutionResult {
-            retcode: error.code(),
-            uuid: random_uuid(),
-            retval: error.extra(),
-            stderr: error.message(),
-            stdout: String::new(),
-        }
-    }
-}
-
-#[test]
-fn test() {
-    let err = cdumay_rest_client::exceptions::HTTPException::new(500, None, None, None);
-    let res = ExecutionResult::from(err);
-    println!("{:?}", res);
 }
