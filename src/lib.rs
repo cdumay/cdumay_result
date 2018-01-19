@@ -42,6 +42,21 @@ impl ExecutionResult {
     pub fn print_err(&mut self, data: String) {
         self.stderr += &format!("{}\n", data);
     }
+    pub fn uuid(&self) -> String {
+        self.uuid.clone()
+    }
+    pub fn retcode(&self) -> u16 {
+        self.retcode
+    }
+    pub fn stdout(&self) -> String {
+        self.stdout.clone()
+    }
+    pub fn stderr(&self) -> String {
+        self.stderr.clone()
+    }
+    pub fn retval(&self) -> Map<String, Value> {
+        self.retval.clone()
+    }
 }
 
 impl fmt::Display for ExecutionResult {
