@@ -1,5 +1,7 @@
 # cdumay_result
 
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+
 A library to serialize and deserialize result using JSON.
 
 ## Quickstart
