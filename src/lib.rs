@@ -17,6 +17,12 @@ pub fn random_uuid() -> String {
 }
 
 pub trait BaseResult: fmt::Display {
+    fn is_error(&self) -> bool {
+        match self.retcode() {
+            0 => true,
+            _ => false
+        }
+    }
     fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> Self;
     fn print(&mut self, data: String);
     fn print_err(&mut self, data: String);
