@@ -41,7 +41,7 @@ println!("{}", to_string_pretty(&err).unwrap());
 
 ## Project Links
 
-- Issues: https://github.com/cdumay/cdumay-errors-rs/issues
+- Issues: https://github.com/cdumay/cdumay-result-rs/issues
 - Documentation: 
 
 ## License
