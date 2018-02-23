@@ -6,15 +6,30 @@ extern crate serde_json;
 #[macro_use]
 extern crate serde_derive;
 
+#[cfg(feature = "cdumay-errors")]
+extern crate cdumay_errors;
+
 use std::fmt;
-use std::ops::Add;
 use serde_json::{Map, Value};
 
 pub fn random_uuid() -> String {
     uuid::Uuid::new_v4().hyphenated().to_string()
 }
 
-#[derive(Serialize, Deserialize)]
+pub trait BaseResult: fmt::Display {
+    fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> Self;
+    fn print(&mut self, data: String);
+    fn print_err(&mut self, data: String);
+    fn uuid(&self) -> String;
+    fn retcode(&self) -> u16;
+    fn stdout(&self) -> String;
+    fn stderr(&self) -> String;
+    fn retval(&self) -> Map<String, Value>;
+    fn empty() -> Self;
+    fn merge(&self, other: Self) -> Self;
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ExecutionResult {
     uuid: String,
     retcode: u16,
@@ -23,8 +38,8 @@ pub struct ExecutionResult {
     retval: Map<String, Value>,
 }
 
-impl ExecutionResult {
-    pub fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> ExecutionResult {
+impl BaseResult for ExecutionResult {
+    fn new(retcode: Option<u16>, stdout: Option<String>, stderr: Option<String>, retval: Option<Map<String, Value>>, uuid: Option<String>) -> ExecutionResult {
         ExecutionResult {
             uuid: uuid.unwrap_or(random_uuid()),
             retcode: retcode.unwrap_or(0),
@@ -33,26 +48,49 @@ impl ExecutionResult {
             retval: retval.unwrap_or(Map::new()),
         }
     }
-    pub fn print(&mut self, data: String) {
+    fn empty() -> ExecutionResult {
+        ExecutionResult::new(None, None, None, None, None)
+    }
+    fn print(&mut self, data: String) {
         self.stdout += &format!("{}\n", data);
     }
-    pub fn print_err(&mut self, data: String) {
+    fn print_err(&mut self, data: String) {
         self.stderr += &format!("{}\n", data);
     }
-    pub fn uuid(&self) -> String {
+    fn uuid(&self) -> String {
         self.uuid.clone()
     }
-    pub fn retcode(&self) -> u16 {
+    fn retcode(&self) -> u16 {
         self.retcode
     }
-    pub fn stdout(&self) -> String {
+    fn stdout(&self) -> String {
         self.stdout.clone()
     }
-    pub fn stderr(&self) -> String {
+    fn stderr(&self) -> String {
         self.stderr.clone()
     }
-    pub fn retval(&self) -> Map<String, Value> {
+    fn retval(&self) -> Map<String, Value> {
         self.retval.clone()
+    }
+    fn merge(&self, other: ExecutionResult) -> ExecutionResult {
+        ExecutionResult {
+            uuid: self.uuid(),
+            retcode: if self.retcode() > other.retcode() { self.retcode() } else { other.retcode() },
+            stdout: if other.stdout.len() > 0 { other.stdout() } else { self.stdout() },
+            stderr: if other.stderr.len() > 0 { other.stderr() } else { self.stderr() },
+            retval: {
+                let mut merge = Map::new();
+                for (key, value) in self.retval().into_iter() {
+                    merge.insert(key, value);
+                }
+                for (key, value) in other.retval().into_iter() {
+                    if merge.contains_key(&key) == false {
+                        merge.insert(key, value);
+                    }
+                }
+                merge
+            },
+        }
     }
 }
 
@@ -65,32 +103,15 @@ impl fmt::Display for ExecutionResult {
     }
 }
 
-impl fmt::Debug for ExecutionResult {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Result<recode='{}'>", self.retcode)
-    }
-}
-
-impl Add for ExecutionResult {
-    type Output = ExecutionResult;
-    fn add(self, other: ExecutionResult) -> ExecutionResult {
+#[cfg(feature = "cdumay-errors")]
+impl From<cdumay_errors::Error> for ExecutionResult {
+    fn from(error: cdumay_errors::Error) -> ExecutionResult {
         ExecutionResult {
-            uuid: self.uuid,
-            retcode: if self.retcode > other.retcode { self.retcode } else { other.retcode },
-            stdout: if other.stdout.len() > 0 { format!("{}\n{}", self.stdout, other.stdout) } else { format!("{}", self.stdout) },
-            stderr: if other.stderr.len() > 0 { format!("{}\n{}", self.stderr, other.stderr) } else { format!("{}", self.stderr) },
-            retval: {
-                let mut merge = Map::new();
-                for (key, value) in self.retval.into_iter() {
-                    merge.insert(key, value);
-                }
-                for (key, value) in other.retval.into_iter() {
-                    if merge.contains_key(&key) == false {
-                        merge.insert(key, value);
-                    }
-                }
-                merge
-            },
+            uuid: random_uuid(),
+            retcode: error.code(),
+            stdout: String::new(),
+            stderr: error.message(),
+            retval: error.extra(),
         }
     }
 }

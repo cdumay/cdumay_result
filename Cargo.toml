@@ -15,3 +15,10 @@ serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 uuid = { version = "0.4", features = ["serde", "v4"] }
+cdumay_errors = { path = "../cdumay-errors-rs", optional = true }
+
+
+[features]
+default = []
+all = ["cdumay-errors"]
+cdumay-errors = ["cdumay_errors"]
