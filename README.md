@@ -35,10 +35,9 @@ println!("{}", to_string_pretty(&err).unwrap());
 }
 ```
 
-
 ## Features
 
-- [cdumay-result](https://github.com/cdumay/cdumay-result-rs): A library to serialize and deserialize result using JSON.
+- [cdumay-errors](https://github.com/cdumay/cdumay-errors-rs): A basic library used to standardize errors and to serialize them into json using serde_json.
 
 ## Project Links
 
