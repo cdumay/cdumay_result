@@ -1,11 +1,19 @@
 [package]
-name = "cdumay-result"
+name = "cdumay_result"
 version = "0.1.0"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
-edition = "2018"
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/cdumay/cdumay-result-rs"
+homepage =  "https://github.com/cdumay/cdumay-result-rs"
+description = """
+A library to serialize and deserialize result using serde
+"""
 
 [dependencies]
 serde = "1.0"
 serde_derive = "1.0"
 serde_json = "1.0"
 uuid = { version = "0.7", features = ["v4", "serde"] }
+cdumay_values = { git = "https://github.com/cdumay/cdumay-values-rs" }
+cdumay_error = { path = "https://github.com/cdumay/cdumay-errors-rs" }
