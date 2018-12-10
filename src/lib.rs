@@ -1,7 +1,7 @@
 extern crate uuid;
 extern crate serde;
 extern crate serde_json;
-extern crate cdumay_values;
+extern crate serde_value;
 extern crate cdumay_error;
 
 #[macro_use]
@@ -18,7 +18,7 @@ pub struct ExecResult {
     stdout: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
     stderr: Option<String>,
-    retval: HashMap<String, cdumay_values::Value>,
+    retval: HashMap<String, serde_value::Value>,
 }
 
 pub struct ExecResultBuilder {
@@ -26,7 +26,7 @@ pub struct ExecResultBuilder {
     retcode: u16,
     stdout: Option<String>,
     stderr: Option<String>,
-    retval: HashMap<String, cdumay_values::Value>,
+    retval: HashMap<String, serde_value::Value>,
 }
 
 impl ExecResultBuilder {
@@ -55,7 +55,7 @@ impl ExecResultBuilder {
         self.stderr = Some(stderr);
         self
     }
-    pub fn retval(mut self, retval: HashMap<String, cdumay_values::Value>) -> ExecResultBuilder {
+    pub fn retval(mut self, retval: HashMap<String, serde_value::Value>) -> ExecResultBuilder {
         self.retval = retval;
         self
     }
@@ -79,11 +79,11 @@ impl ExecResult {
     pub fn stdout_mut(&mut self) -> &mut Option<String> { &mut self.stdout }
     pub fn stderr(&self) -> &Option<String> { &self.stderr }
     pub fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
-    pub fn retval(&self) -> &HashMap<String, cdumay_values::Value> { &self.retval }
-    pub fn retval_mut(&mut self) -> &mut HashMap<String, cdumay_values::Value> { &mut self.retval }
+    pub fn retval(&self) -> &HashMap<String, serde_value::Value> { &self.retval }
+    pub fn retval_mut(&mut self) -> &mut HashMap<String, serde_value::Value> { &mut self.retval }
 
     pub fn is_error(&self) -> bool { self.retcode != 0 }
-    pub fn search_value(&self, key: &str, default: Option<cdumay_values::Value>) -> Option<cdumay_values::Value> {
+    pub fn search_value(&self, key: &str, default: Option<serde_value::Value>) -> Option<serde_value::Value> {
         match self.retval.get(key) {
             Some(data) => Some(data.clone()),
             None => default
