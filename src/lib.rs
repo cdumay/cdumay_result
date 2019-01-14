@@ -2,6 +2,7 @@ extern crate uuid;
 extern crate serde;
 extern crate serde_json;
 extern crate serde_value;
+#[cfg(feature = "cdumay-error")]
 extern crate cdumay_error;
 
 #[macro_use]
@@ -102,6 +103,7 @@ impl Add<ExecResult> for ExecResult {
     }
 }
 
+#[cfg(feature = "cdumay-error")]
 impl From<cdumay_error::Error> for ExecResult {
     fn from(error: cdumay_error::Error) -> ExecResult {
         let mut res = ExecResult::default();
