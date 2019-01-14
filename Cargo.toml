@@ -1,6 +1,6 @@
 [package]
 name = "cdumay_result"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 license = "MIT"
 readme = "README.md"

@@ -21,70 +21,21 @@ pub struct ExecResult {
     retval: HashMap<String, serde_value::Value>,
 }
 
-pub struct ExecResultBuilder {
-    uuid: uuid::Uuid,
-    retcode: u16,
-    stdout: Option<String>,
-    stderr: Option<String>,
-    retval: HashMap<String, serde_value::Value>,
-}
+pub trait ExecResultProperties {
+    fn uuid(&self) -> &uuid::Uuid;
+    fn uuid_mut(&mut self) -> &mut uuid::Uuid;
+    fn retcode(&self) -> &u16;
+    fn retcode_mut(&mut self) -> &mut u16;
+    fn stdout(&self) -> &Option<String>;
+    fn stdout_mut(&mut self) -> &mut Option<String>;
+    fn stderr(&self) -> &Option<String>;
+    fn stderr_mut(&mut self) -> &mut Option<String>;
+    fn retval(&self) -> &HashMap<String, serde_value::Value>;
+    fn retval_mut(&mut self) -> &mut HashMap<String, serde_value::Value>;
 
-impl ExecResultBuilder {
-    pub fn new() -> ExecResultBuilder {
-        ExecResultBuilder {
-            uuid: uuid::Uuid::new_v4(),
-            retcode: 0,
-            stdout: None,
-            stderr: None,
-            retval: HashMap::new(),
-        }
-    }
-    pub fn uuid(mut self, uuid: uuid::Uuid) -> ExecResultBuilder {
-        self.uuid = uuid;
-        self
-    }
-    pub fn retcode(mut self, retcode: u16) -> ExecResultBuilder {
-        self.retcode = retcode;
-        self
-    }
-    pub fn stdout(mut self, stdout: String) -> ExecResultBuilder {
-        self.stdout = Some(stdout);
-        self
-    }
-    pub fn stderr(mut self, stderr: String) -> ExecResultBuilder {
-        self.stderr = Some(stderr);
-        self
-    }
-    pub fn retval(mut self, retval: HashMap<String, serde_value::Value>) -> ExecResultBuilder {
-        self.retval = retval;
-        self
-    }
-    pub fn build(self) -> ExecResult {
-        let mut result = ExecResult::default();
-        *result.uuid_mut() = self.uuid;
-        *result.retcode_mut() = self.retcode;
-        *result.stdout_mut() = self.stdout;
-        *result.stderr_mut() = self.stderr;
-        *result.retval_mut() = self.retval;
-        result
-    }
-}
-
-impl ExecResult {
-    pub fn uuid(&self) -> &uuid::Uuid { &self.uuid }
-    pub fn uuid_mut(&mut self) -> &mut uuid::Uuid { &mut self.uuid }
-    pub fn retcode(&self) -> &u16 { &self.retcode }
-    pub fn retcode_mut(&mut self) -> &mut u16 { &mut self.retcode }
-    pub fn stdout(&self) -> &Option<String> { &self.stdout }
-    pub fn stdout_mut(&mut self) -> &mut Option<String> { &mut self.stdout }
-    pub fn stderr(&self) -> &Option<String> { &self.stderr }
-    pub fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
-    pub fn retval(&self) -> &HashMap<String, serde_value::Value> { &self.retval }
-    pub fn retval_mut(&mut self) -> &mut HashMap<String, serde_value::Value> { &mut self.retval }
-
-    pub fn is_error(&self) -> bool { self.retcode != 0 }
-    pub fn search_value(&self, key: &str, default: Option<serde_value::Value>) -> Option<serde_value::Value> {
-        match self.retval.get(key) {
+    fn is_error(&self) -> bool { *self.retcode() != 0 }
+    fn search_value(&self, key: &str, default: Option<serde_value::Value>) -> Option<serde_value::Value> {
+        match self.retval().get(key) {
             Some(data) => Some(data.clone()),
             None => default
         }
@@ -101,6 +52,20 @@ impl Default for ExecResult {
             retval: HashMap::new(),
         }
     }
+}
+
+
+impl ExecResultProperties for ExecResult {
+    fn uuid(&self) -> &uuid::Uuid { &self.uuid }
+    fn uuid_mut(&mut self) -> &mut uuid::Uuid { &mut self.uuid }
+    fn retcode(&self) -> &u16 { &self.retcode }
+    fn retcode_mut(&mut self) -> &mut u16 { &mut self.retcode }
+    fn stdout(&self) -> &Option<String> { &self.stdout }
+    fn stdout_mut(&mut self) -> &mut Option<String> { &mut self.stdout }
+    fn stderr(&self) -> &Option<String> { &self.stderr }
+    fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
+    fn retval(&self) -> &HashMap<String, serde_value::Value> { &self.retval }
+    fn retval_mut(&mut self) -> &mut HashMap<String, serde_value::Value> { &mut self.retval }
 }
 
 impl Add<ExecResult> for ExecResult {
