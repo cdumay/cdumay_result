@@ -8,19 +8,7 @@ extern crate cdumay_error;
 #[macro_use]
 extern crate serde_derive;
 
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct ExecResult {
-    uuid: uuid::Uuid,
-    retcode: u16,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    stdout: Option<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    stderr: Option<String>,
-    retval: std::collections::HashMap<String, serde_value::Value>,
-}
-
-pub trait ExecResultProperties {
+pub trait ResultProps {
     fn uuid(&self) -> &uuid::Uuid;
     fn uuid_mut(&mut self) -> &mut uuid::Uuid;
     fn retcode(&self) -> &u16;
@@ -42,9 +30,21 @@ pub trait ExecResultProperties {
     fn merge(r1: &Self, r2: &Self) -> Self;
 }
 
-impl Default for ExecResult {
-    fn default() -> ExecResult {
-        ExecResult {
+#[derive(Serialize, Deserialize, Debug, Clone)]
+pub struct ResultRepr {
+    uuid: uuid::Uuid,
+    retcode: u16,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stdout: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stderr: Option<String>,
+    retval: std::collections::HashMap<String, serde_value::Value>,
+}
+
+
+impl Default for ResultRepr {
+    fn default() -> ResultRepr {
+        ResultRepr {
             uuid: uuid::Uuid::new_v4(),
             retcode: 0,
             stdout: None,
@@ -55,7 +55,7 @@ impl Default for ExecResult {
 }
 
 
-impl ExecResultProperties for ExecResult {
+impl ResultProps for ResultRepr {
     fn uuid(&self) -> &uuid::Uuid { &self.uuid }
     fn uuid_mut(&mut self) -> &mut uuid::Uuid { &mut self.uuid }
     fn retcode(&self) -> &u16 { &self.retcode }
@@ -66,7 +66,7 @@ impl ExecResultProperties for ExecResult {
     fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
     fn retval(&self) -> &std::collections::HashMap<String, serde_value::Value> { &self.retval }
     fn retval_mut(&mut self) -> &mut std::collections::HashMap<String, serde_value::Value> { &mut self.retval }
-    fn merge(r1: &ExecResult, r2: &ExecResult) -> ExecResult {
+    fn merge(r1: &ResultRepr, r2: &ResultRepr) -> ResultRepr {
         let mut res = Self::default();
 
         *res.stdout_mut() = match (r1.stdout(), r2.stdout()) {
@@ -86,7 +86,7 @@ impl ExecResultProperties for ExecResult {
                 res.retval_mut().insert(k.clone(), v.clone());
             }
         }
-        
+
         *res.retcode_mut() = match r1.retcode() > r2.retcode() {
             true => *r1.retcode(),
             false => *r2.retcode()
@@ -96,9 +96,12 @@ impl ExecResultProperties for ExecResult {
 }
 
 #[cfg(feature = "cdumay-error")]
-impl From<cdumay_error::Error> for ExecResult {
-    fn from(error: cdumay_error::Error) -> ExecResult {
-        let mut res = ExecResult::default();
+use cdumay_error::ErrorProperties;
+
+#[cfg(feature = "cdumay-error")]
+impl From<cdumay_error::Error> for ResultRepr {
+    fn from(error: cdumay_error::Error) -> ResultRepr {
+        let mut res = ResultRepr::default();
         *res.retcode_mut() = *error.code();
         *res.stderr_mut() = Some(error.message().clone());
         if let Some(data) = error.extra() {
