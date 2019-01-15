@@ -96,11 +96,11 @@ impl ResultProps for ResultRepr {
 }
 
 #[cfg(feature = "cdumay-error")]
-use cdumay_error::ErrorProperties;
+use cdumay_error::ErrorProps;
 
 #[cfg(feature = "cdumay-error")]
-impl From<cdumay_error::Error> for ResultRepr {
-    fn from(error: cdumay_error::Error) -> ResultRepr {
+impl<E: cdumay_error::ErrorProps + std::marker::Sized> From<E> for ResultRepr {
+    fn from(error: E) -> ResultRepr {
         let mut res = ResultRepr::default();
         *res.retcode_mut() = *error.code();
         *res.stderr_mut() = Some(error.message().clone());
