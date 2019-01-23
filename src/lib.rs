@@ -20,7 +20,7 @@ pub trait ResultProps {
     fn retval(&self) -> &std::collections::HashMap<String, serde_value::Value>;
     fn retval_mut(&mut self) -> &mut std::collections::HashMap<String, serde_value::Value>;
 
-    fn is_error(&self) -> bool { *self.retcode() != 0 }
+    fn is_error(&self) -> bool { *self.retcode() > 200 }
     fn search_value(&self, key: &str, default: Option<serde_value::Value>) -> Option<serde_value::Value> {
         match self.retval().get(key) {
             Some(data) => Some(data.clone()),
@@ -95,12 +95,29 @@ impl ResultProps for ResultRepr {
     }
 }
 
-#[cfg(feature = "cdumay-error")]
-use cdumay_error::ErrorProps;
+impl std::fmt::Display for ResultRepr {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "Result: {}({}, stdout: {:?}, stderr: {:?}, retval: {:?})",
+            match self.is_error() {
+                true => "Err",
+                false => "Ok"
+            },
+            self.retcode(),
+            self.stdout(),
+            self.stderr(),
+            self.retval()
+        )
+    }
+}
 
 #[cfg(feature = "cdumay-error")]
-impl<E: cdumay_error::ErrorProps + std::marker::Sized> From<E> for ResultRepr {
-    fn from(error: E) -> ResultRepr {
+use cdumay_error::ErrorRepr;
+
+#[cfg(feature = "cdumay-error")]
+impl From<ErrorRepr> for ResultRepr {
+    fn from(error: ErrorRepr) -> ResultRepr {
         let mut res = ResultRepr::default();
         *res.retcode_mut() = *error.code();
         *res.stderr_mut() = Some(error.message().clone());

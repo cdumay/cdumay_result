@@ -1,6 +1,6 @@
 [package]
 name = "cdumay_result"
-version = "0.1.2"
+version = "0.1.3"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -15,7 +15,7 @@ all = []
 cdumay-error = ["cdumay_error"]
 
 [dependencies]
-cdumay_error = { git = "https://github.com/cdumay/cdumay-errors-rs" , optional = true }
+cdumay_error = { path = "../cdumay-error" , optional = true }
 serde = "1.0"
 serde-value = "0.5"
 serde_derive = "1.0"
