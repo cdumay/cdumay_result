@@ -48,7 +48,7 @@ fn main() {
 
 ## Features
 
-- [cdumay-error](https://github.com/cdumay/cdumay-errors-rs): A basic library used to standardize errors and to serialize them into json using serde_json.
+- **cdumay-error**: Implement the `From` trait on `ErrorRepr`.
 
 ```toml
 [dependencies]
