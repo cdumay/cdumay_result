@@ -9,6 +9,7 @@ extern crate cdumay_error;
 #[macro_use]
 extern crate serde_derive;
 
+#[cfg(feature = "cdumay-error")]
 use cdumay_error::ErrorProperties;
 use std::ops::Add;
 
