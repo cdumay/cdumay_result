@@ -15,7 +15,7 @@ all = []
 cdumay-error = ["cdumay_error"]
 
 [dependencies]
-cdumay_error = { path = "../cdumay-error" , optional = true }
+cdumay_error = { git = "https://github.com/cdumay/cdumay-errors-rs" , optional = true }
 serde = "1.0"
 serde-value = "0.5"
 serde_derive = "1.0"
