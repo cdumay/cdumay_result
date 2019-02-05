@@ -65,20 +65,20 @@ extern crate serde_json;
 extern crate serde_value;
 
 fn main() {
-    use cdumay_error::ErrorReprBuilder;
-    use cdumay_error::http::HttpErrors;
+    use cdumay_error::ErrorBuilder;
+    use cdumay_error::repr::ErrorRepr;
+    use cdumay_error::types::http::HttpErrors;
     use cdumay_result::ResultRepr;
     use serde_value::Value;
     use std::collections::HashMap;
 
-    let err = ErrorReprBuilder::new(HttpErrors::NOT_FOUND)
-        .extra({
+    let err = ErrorRepr::from(HttpErrors::NOT_FOUND)
+        .set_message("The requested resource could not be found but may be available in the future.".to_string())
+        .set_extra({
             let mut extra = HashMap::new();
             extra.insert("url".to_string(), Value::String("https://www.example.com/cdumay".to_string()));
             extra
-        })
-        .message("The requested resource could not be found but may be available in the future.".to_string())
-        .build();
+        });
 
     println!("{}", serde_json::to_string_pretty(&ResultRepr::from(err)).unwrap());
 }

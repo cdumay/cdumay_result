@@ -10,20 +10,14 @@ extern crate cdumay_error;
 extern crate serde_derive;
 
 #[cfg(feature = "cdumay-error")]
-use cdumay_error::ErrorProperties;
 use std::ops::Add;
 
-pub trait ResultProps {
+pub trait ResultGetters {
     fn uuid(&self) -> &uuid::Uuid;
-    fn uuid_mut(&mut self) -> &mut uuid::Uuid;
     fn retcode(&self) -> &u16;
-    fn retcode_mut(&mut self) -> &mut u16;
     fn stdout(&self) -> &Option<String>;
-    fn stdout_mut(&mut self) -> &mut Option<String>;
     fn stderr(&self) -> &Option<String>;
-    fn stderr_mut(&mut self) -> &mut Option<String>;
     fn retval(&self) -> &std::collections::HashMap<String, serde_value::Value>;
-    fn retval_mut(&mut self) -> &mut std::collections::HashMap<String, serde_value::Value>;
 
     fn is_error(&self) -> bool { *self.retcode() > 200 }
     fn search_value(&self, key: &str, default: Option<serde_value::Value>) -> Option<serde_value::Value> {
@@ -32,6 +26,22 @@ pub trait ResultProps {
             None => default
         }
     }
+}
+
+pub trait ResultSetters {
+    fn uuid_mut(&mut self) -> &mut uuid::Uuid;
+    fn retcode_mut(&mut self) -> &mut u16;
+    fn stdout_mut(&mut self) -> &mut Option<String>;
+    fn stderr_mut(&mut self) -> &mut Option<String>;
+    fn retval_mut(&mut self) -> &mut std::collections::HashMap<String, serde_value::Value>;
+}
+
+pub trait ResultBuilder {
+    fn new(uuid: Option<uuid::Uuid>, retcode: Option<u16>) -> Self;
+    fn set_retcode(self, retcode: u16) -> Self;
+    fn set_stdout(self, stdout: String) -> Self;
+    fn set_stderr(self, stderr: String) -> Self;
+    fn set_retval(self, retval: std::collections::HashMap<String, serde_value::Value>) -> Self;
 }
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
@@ -59,17 +69,48 @@ impl Default for ResultRepr {
 }
 
 
-impl ResultProps for ResultRepr {
+impl ResultGetters for ResultRepr {
     fn uuid(&self) -> &uuid::Uuid { &self.uuid }
-    fn uuid_mut(&mut self) -> &mut uuid::Uuid { &mut self.uuid }
     fn retcode(&self) -> &u16 { &self.retcode }
-    fn retcode_mut(&mut self) -> &mut u16 { &mut self.retcode }
     fn stdout(&self) -> &Option<String> { &self.stdout }
-    fn stdout_mut(&mut self) -> &mut Option<String> { &mut self.stdout }
     fn stderr(&self) -> &Option<String> { &self.stderr }
-    fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
     fn retval(&self) -> &std::collections::HashMap<String, serde_value::Value> { &self.retval }
+}
+
+impl ResultSetters for ResultRepr {
+    fn uuid_mut(&mut self) -> &mut uuid::Uuid { &mut self.uuid }
+    fn retcode_mut(&mut self) -> &mut u16 { &mut self.retcode }
+    fn stdout_mut(&mut self) -> &mut Option<String> { &mut self.stdout }
+    fn stderr_mut(&mut self) -> &mut Option<String> { &mut self.stderr }
     fn retval_mut(&mut self) -> &mut std::collections::HashMap<String, serde_value::Value> { &mut self.retval }
+}
+
+impl ResultBuilder for ResultRepr {
+    fn new(uuid: Option<uuid::Uuid>, retcode: Option<u16>) -> ResultRepr {
+        ResultRepr {
+            uuid: uuid.unwrap_or(uuid::Uuid::new_v4()),
+            retcode: retcode.unwrap_or(0),
+            stdout: None,
+            stderr: None,
+            retval: std::collections::HashMap::new(),
+        }
+    }
+    fn set_retcode(mut self, retcode: u16) -> ResultRepr {
+        self.retcode = retcode;
+        self
+    }
+    fn set_stdout(mut self, stdout: String) -> ResultRepr {
+        self.stdout = Some(stdout);
+        self
+    }
+    fn set_stderr(mut self, stderr: String) -> ResultRepr {
+        self.stderr = Some(stderr);
+        self
+    }
+    fn set_retval(mut self, retval: std::collections::HashMap<String, serde_value::Value>) -> ResultRepr {
+        self.retval = retval;
+        self
+    }
 }
 
 impl Add for &ResultRepr {
@@ -112,57 +153,18 @@ impl std::fmt::Display for ResultRepr {
     }
 }
 
-pub struct ResultReprBuilder {
-    uuid: uuid::Uuid,
-    retcode: u16,
-    stdout: Option<String>,
-    stderr: Option<String>,
-    retval: Option<std::collections::HashMap<String, serde_value::Value>>,
-}
-
-impl ResultReprBuilder {
-    pub fn new(uuid: Option<uuid::Uuid>, retcode: Option<u16>) -> ResultReprBuilder {
-        ResultReprBuilder {
-            uuid: uuid.unwrap_or(uuid::Uuid::new_v4()),
-            retcode: retcode.unwrap_or(0),
-            stdout: None,
-            stderr: None,
-            retval: None,
-        }
-    }
-    pub fn stdout(mut self, stdout: String) -> ResultReprBuilder {
-        self.stdout = Some(stdout);
-        self
-    }
-    pub fn stderr(mut self, stderr: String) -> ResultReprBuilder {
-        self.stderr = Some(stderr);
-        self
-    }
-    pub fn retval(mut self, retval: std::collections::HashMap<String, serde_value::Value>) -> ResultReprBuilder {
-        self.retval = Some(retval);
-        self
-    }
-    pub fn build(self) -> ResultRepr {
-        ResultRepr {
-            uuid: self.uuid,
-            retcode: self.retcode,
-            stdout: self.stdout,
-            stderr: self.stderr,
-            retval: self.retval.unwrap_or(std::collections::HashMap::new()),
-        }
-    }
-}
-
-
 #[cfg(feature = "cdumay-error")]
-use cdumay_error::ErrorRepr;
+use cdumay_error::repr::ErrorRepr;
+#[cfg(feature = "cdumay-error")]
+use cdumay_error::ErrorGetters;
 
 #[cfg(feature = "cdumay-error")]
 impl From<ErrorRepr> for ResultRepr {
     fn from(error: ErrorRepr) -> ResultRepr {
-        let mut res = ResultRepr::default();
-        *res.retcode_mut() = *error.code();
-        *res.stderr_mut() = Some(error.message().clone());
+        let mut res = ResultRepr::default()
+            .set_retcode(*error.code())
+            .set_stderr(error.message().clone());
+
         if let Some(data) = error.extra() {
             *res.retval_mut() = data.clone();
         }
