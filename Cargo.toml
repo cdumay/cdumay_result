@@ -5,11 +5,16 @@ authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 license = "MIT"
 readme = "README.md"
 documentation = "https://docs.rs/cdumay_result"
-repository = "https://github.com/cdumay/cdumay-result-rs"
-homepage =  "https://github.com/cdumay/cdumay-result-rs"
+repository = "https://github.com/cdumay/rust-cdumay_result"
+homepage =  "https://github.com/cdumay/rust-cdumay_result"
 description = """A library to serialize and deserialize result using serde"""
 keywords = ["Error", "serde", "Result"]
 categories = ["caching", "data-structures", "encoding"]
+
+[badges]
+gitlab = { repository = "cdumay/rust-cdumay_result" }
+travis-ci = { repository = "cdumay/rust-cdumay_result" }
+maintenance = { status = "as-is" }
 
 [dependencies]
 cdumay_error = "0.1"
