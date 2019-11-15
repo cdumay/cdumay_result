@@ -17,7 +17,7 @@ travis-ci = { repository = "cdumay/rust-cdumay_result" }
 maintenance = { status = "as-is" }
 
 [dependencies]
-cdumay_error = "0.1"
+cdumay_error = { git = "https://github.com/cdumay/rust-cdumay_errors" }
 serde = "1.0"
 serde-value = "0.6"
 serde_derive = "1.0"
