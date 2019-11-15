@@ -1,17 +1,23 @@
 # cdumay_result
 
-[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
+[![Build Status](https://travis-ci.org/cdumay/rust-cdumay_result.svg?branch=master)](https://travis-ci.org/cdumay/rust-cdumay_result)
+[![Latest version](https://img.shields.io/crates/v/cdumay_result.svg)](https://crates.io/crates/cdumay_result)
+[![Documentation](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result)
+![License](https://img.shields.io/crates/l/cdumay_result.svg)
 
-A library to serialize and deserialize result using JSON.
+cdumay_result is a basic library used to standardize result and serialize them using [serde](https://docs.serde.rs/serde/).
 
 ## Quickstart
 
+_Cargo.toml_:
 ```toml
 [dependencies]
-cdumay_result = { git = "https://github.com/cdumay/cdumay-result-rs" }
+cdumay_result = "0.1"
 serde_json = "1.0"
-serde-value = "0.5"
+serde-value = "0.6"
 ```
+
+_main.rs_:
 
 ```rust
 extern crate cdumay_result;
@@ -34,7 +40,7 @@ fn main() {
     println!("{}", serde_json::to_string_pretty(&result).unwrap());
 }
 ```
-
+_Output_:
 ```json
 {
   "uuid": "166d5744-b159-48b5-b8c6-9242abd8ebfb",
@@ -45,57 +51,9 @@ fn main() {
   }
 }
 ```
-
-## Features
-
-- **cdumay-error**: Implement the `From` trait on `ErrorRepr`.
-
-```toml
-[dependencies]
-cdumay_error = { git = "https://github.com/cdumay/cdumay-errors-rs" , features = ["http"] }
-cdumay_result = { git = "https://github.com/cdumay/cdumay-result-rs", features = ["cdumay-error"]}
-serde_json = "1.0"
-serde-value = "0.5"
-```
-
-```rust
-extern crate cdumay_error;
-extern crate cdumay_result;
-extern crate serde_json;
-extern crate serde_value;
-
-fn main() {
-    use cdumay_error::ErrorBuilder;
-    use cdumay_error::repr::ErrorRepr;
-    use cdumay_error::types::http::HttpErrors;
-    use cdumay_result::ResultRepr;
-    use serde_value::Value;
-    use std::collections::HashMap;
-
-    let err = ErrorRepr::from(HttpErrors::NOT_FOUND)
-        .set_message("The requested resource could not be found but may be available in the future.".to_string())
-        .set_extra({
-            let mut extra = HashMap::new();
-            extra.insert("url".to_string(), Value::String("https://www.example.com/cdumay".to_string()));
-            extra
-        });
-
-    println!("{}", serde_json::to_string_pretty(&ResultRepr::from(err)).unwrap());
-}
-```
-
-```json
-{
-  "uuid": "d55571a2-426f-45c9-b4b6-ec95cc617528",
-  "retcode": 404,
-  "stderr": "The requested resource could not be found but may be available in the future.",
-  "retval": {
-    "url": "https://www.example.com/cdumay"
-  }
-}
-```
-
 ## Project Links
 
-- Issues: https://github.com/cdumay/cdumay-result-rs/issues
-- Documentation: not available yet
+- Issues: https://github.com/cdumay/rust-cdumay_result/issues
+- Documentation: https://docs.rs/cdumay_result
+
+License: MIT
