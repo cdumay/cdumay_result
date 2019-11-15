@@ -10,7 +10,7 @@
 //! _Cargo.toml_:
 //! ```toml
 //! [dependencies]
-//! cdumay_result = "0.1"
+//! cdumay_result = { git = "https://github.com/cdumay/rust-cdumay_result" }
 //! serde_json = "1.0"
 //! serde-value = "0.6"
 //! ```
