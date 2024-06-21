@@ -1,8 +1,3 @@
-//! [![Build Status](https://travis-ci.org/cdumay/rust-cdumay_result.svg?branch=master)](https://travis-ci.org/cdumay/rust-cdumay_result)
-//! [![Latest version](https://img.shields.io/crates/v/cdumay_result.svg)](https://crates.io/crates/cdumay_result)
-//! [![Documentation](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result)
-//! ![License](https://img.shields.io/crates/l/cdumay_result.svg)
-//!
 //! cdumay_result is a basic library used to standardize result and serialize them using [serde](https://docs.serde.rs/serde/).
 //!
 //! ## Quickstart
@@ -10,9 +5,8 @@
 //! _Cargo.toml_:
 //! ```toml
 //! [dependencies]
-//! cdumay_result = { git = "https://github.com/cdumay/rust-cdumay_result" }
+//! cdumay_result = "0.2"
 //! serde_json = "1.0"
-//! serde-value = "0.6"
 //! ```
 //!
 //! _main.rs_:
@@ -20,21 +14,14 @@
 //! ```rust
 //! extern crate cdumay_result;
 //! extern crate serde_json;
-//! extern crate serde_value;
 //!
 //! fn main() {
-//!     use cdumay_result::ResultReprBuilder;
+//!     use cdumay_result::ResultRepr;
 //!     use std::collections::HashMap;
-//!     use serde_value::Value;
 //!
-//!     let result = ResultReprBuilder::new(None, None)
-//!         .stdout("A useful result !".to_string())
-//!         .retval({
-//!             let mut retval = HashMap::new();
-//!             retval.insert("one".to_string(), Value::I32(1));
-//!             retval
-//!         })
-//!         .build();
+//!     let mut result = ResultRepr::default();
+//!     result.stdout = Some("A useful result !".to_string());
+//!     result.retval.insert("one".to_string(), serde_json::Value::from(1));
 //!     println!("{}", serde_json::to_string_pretty(&result).unwrap());
 //! }
 //! ```
@@ -49,21 +36,12 @@
 //!   }
 //! }
 //! ```
-//! ## Project Links
-//!
-//! - Issues: https://github.com/cdumay/rust-cdumay_result/issues
-//! - Documentation: https://docs.rs/cdumay_result
-#![deny(warnings)]
+
 extern crate cdumay_error;
 extern crate serde;
-#[macro_use]
-extern crate serde_derive;
-extern crate serde_value;
+extern crate serde_json;
 extern crate uuid;
 
-pub use builder::ResultBuilder;
 pub use repr::ResultRepr;
 
 mod repr;
-mod builder;
-

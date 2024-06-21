@@ -1,6 +1,6 @@
 [package]
 name = "cdumay_result"
-version = "0.1.5"
+version = "0.2.0"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 license = "MIT"
 readme = "README.md"
@@ -17,8 +17,7 @@ travis-ci = { repository = "cdumay/rust-cdumay_result" }
 maintenance = { status = "as-is" }
 
 [dependencies]
-cdumay_error = { git = "https://github.com/cdumay/rust-cdumay_errors" }
-serde = "1.0"
-serde-value = "0.6"
-serde_derive = "1.0"
-uuid = { version = "0.6", features = ["v4", "serde"] }
+cdumay_error = "0.2.1"
+serde = { version = "1.0.203", features = ["derive"] }
+serde_json = "1.0.117"
+uuid = { version = "1.8.0", features = ["v4", "serde"] }

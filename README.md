@@ -1,46 +1,36 @@
-# cdumay_result
+# cdumay_result ![License: MIT](https://img.shields.io/badge/license-MIT-blue) [![cdumay_result on crates.io](https://img.shields.io/crates/v/cdumay_result)](https://crates.io/crates/cdumay_result) [![cdumay_result on docs.rs](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result) [![Source Code Repository](https://img.shields.io/badge/Code-On%20GitHub-blue?logo=GitHub)](https://github.com/cdumay/rust-cdumay_result)
 
-[![Build Status](https://travis-ci.org/cdumay/rust-cdumay_result.svg?branch=master)](https://travis-ci.org/cdumay/rust-cdumay_result)
-[![Latest version](https://img.shields.io/crates/v/cdumay_result.svg)](https://crates.io/crates/cdumay_result)
-[![Documentation](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result)
-![License](https://img.shields.io/crates/l/cdumay_result.svg)
+cdumay_result is a basic library used to standardize result and serialize them using [serde][__link0].
 
-cdumay_result is a basic library used to standardize result and serialize them using [serde](https://docs.serde.rs/serde/).
+### Quickstart
 
-## Quickstart
+*Cargo.toml*:
 
-_Cargo.toml_:
 ```toml
 [dependencies]
-cdumay_result = { git = "https://github.com/cdumay/rust-cdumay_result" }
+cdumay_result = "0.2"
 serde_json = "1.0"
-serde-value = "0.6"
 ```
 
-_main.rs_:
+*main.rs*:
 
 ```rust
 extern crate cdumay_result;
 extern crate serde_json;
-extern crate serde_value;
 
 fn main() {
-    use cdumay_result::ResultReprBuilder;
+    use cdumay_result::ResultRepr;
     use std::collections::HashMap;
-    use serde_value::Value;
 
-    let result = ResultReprBuilder::new(None, None)
-        .stdout("A useful result !".to_string())
-        .retval({
-            let mut retval = HashMap::new();
-            retval.insert("one".to_string(), Value::I32(1));
-            retval
-        })
-        .build();
+    let mut result = ResultRepr::default();
+    result.stdout = Some("A useful result !".to_string());
+    result.retval.insert("one".to_string(), serde_json::Value::from(1));
     println!("{}", serde_json::to_string_pretty(&result).unwrap());
 }
 ```
-_Output_:
+
+*Output*:
+
 ```json
 {
   "uuid": "166d5744-b159-48b5-b8c6-9242abd8ebfb",
@@ -51,9 +41,6 @@ _Output_:
   }
 }
 ```
-## Project Links
 
-- Issues: https://github.com/cdumay/rust-cdumay_result/issues
-- Documentation: https://docs.rs/cdumay_result
 
-License: MIT
+ [__link0]: https://docs.serde.rs/serde/
