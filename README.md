@@ -1,4 +1,4 @@
-# cdumay_result ![License: MIT](https://img.shields.io/badge/license-MIT-blue) [![cdumay_result on crates.io](https://img.shields.io/crates/v/cdumay_result)](https://crates.io/crates/cdumay_result) [![cdumay_result on docs.rs](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result) [![Source Code Repository](https://img.shields.io/badge/Code-On%20GitHub-blue?logo=GitHub)](https://github.com/cdumay/rust-cdumay_result)
+# cdumay_result ![License: BSD-3-Clause](https://img.shields.io/badge/license-BSD--3--Clause-blue) [![cdumay_result on crates.io](https://img.shields.io/crates/v/cdumay_result)](https://crates.io/crates/cdumay_result) [![cdumay_result on docs.rs](https://docs.rs/cdumay_result/badge.svg)](https://docs.rs/cdumay_result) [![Source Code Repository](https://img.shields.io/badge/Code-On%20GitHub-blue?logo=GitHub)](https://github.com/cdumay/rust-cdumay_result)
 
 cdumay_result is a basic library used to standardize result and serialize them using [serde][__link0].
 

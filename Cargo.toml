@@ -2,7 +2,7 @@
 name = "cdumay_result"
 version = "0.2.0"
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
-license = "MIT"
+license = "BSD-3-Clause"
 readme = "README.md"
 documentation = "https://docs.rs/cdumay_result"
 repository = "https://github.com/cdumay/rust-cdumay_result"
