@@ -1,15 +1,17 @@
 [package]
 name = "cdumay_result"
-version = "0.2.0"
+version = "0.3.0"
+
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
+categories = ["caching", "data-structures", "encoding"]
+description = """A library to serialize and deserialize result using serde"""
+documentation = "https://docs.rs/cdumay_result"
+edition = "2021"
+homepage =  "https://github.com/cdumay/rust-cdumay_result"
+keywords = ["Error", "serde", "Result"]
 license = "BSD-3-Clause"
 readme = "README.md"
-documentation = "https://docs.rs/cdumay_result"
 repository = "https://github.com/cdumay/rust-cdumay_result"
-homepage =  "https://github.com/cdumay/rust-cdumay_result"
-description = """A library to serialize and deserialize result using serde"""
-keywords = ["Error", "serde", "Result"]
-categories = ["caching", "data-structures", "encoding"]
 
 [badges]
 gitlab = { repository = "cdumay/rust-cdumay_result" }
@@ -17,7 +19,7 @@ travis-ci = { repository = "cdumay/rust-cdumay_result" }
 maintenance = { status = "as-is" }
 
 [dependencies]
-cdumay_error = "0.2.1"
+cdumay_error = "0.3.0"
 serde = { version = "1.0.203", features = ["derive"] }
 serde_json = "1.0.117"
 uuid = { version = "1.8.0", features = ["v4", "serde"] }

@@ -5,7 +5,7 @@
 //! _Cargo.toml_:
 //! ```toml
 //! [dependencies]
-//! cdumay_result = "0.2"
+//! cdumay_result = "0.3"
 //! serde_json = "1.0"
 //! ```
 //!
@@ -15,14 +15,20 @@
 //! extern crate cdumay_result;
 //! extern crate serde_json;
 //!
-//! fn main() {
-//!     use cdumay_result::ResultRepr;
-//!     use std::collections::HashMap;
+//! use cdumay_result::{ResultBuilder, JsonResult};
+//! use std::collections::BTreeMap;
+//! use serde_json::Value;
 //!
-//!     let mut result = ResultRepr::default();
-//!     result.stdout = Some("A useful result !".to_string());
-//!     result.retval.insert("one".to_string(), serde_json::Value::from(1));
-//!     println!("{}", serde_json::to_string_pretty(&result).unwrap());
+//! fn main() {
+//!     let result = ResultBuilder::default()
+//!         .stdout("A useful result !".into())
+//!         .retval({
+//!             let mut values = BTreeMap::new();
+//!             values.insert("Hello".into(), Value::String("World".into()));
+//!             values
+//!         })
+//!         .build();
+//!     println!("{}", serde_json::to_string_pretty(&JsonResult::from(result)).unwrap());
 //! }
 //! ```
 //! _Output_:
@@ -32,7 +38,7 @@
 //!   "retcode": 0,
 //!   "stdout": "A useful result !",
 //!   "retval": {
-//!     "one": 1
+//!     "Hello": "World"
 //!   }
 //! }
 //! ```
@@ -42,6 +48,10 @@ extern crate serde;
 extern crate serde_json;
 extern crate uuid;
 
-pub use repr::ResultRepr;
+pub use result::Result;
+pub use jsonify::JsonResult;
+pub use builder::ResultBuilder;
 
-mod repr;
+mod result;
+mod jsonify;
+mod builder;
