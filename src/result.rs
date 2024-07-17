@@ -84,8 +84,7 @@ impl From<Error> for Result {
 #[cfg(test)]
 mod test {
     use cdumay_error::{ErrorBuilder, GenericErrors};
-    use Value;
-    use uuid::Uuid;
+    use cdumay_core::{Uuid, Value};
     use crate::JsonResult;
     use super::*;
 

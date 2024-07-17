@@ -62,7 +62,7 @@ impl ResultBuilder {
 mod test {
     use std::collections::BTreeMap;
 
-    use Value;
+    use cdumay_core::Value;
 
     use crate::builder::ResultBuilder;
 
