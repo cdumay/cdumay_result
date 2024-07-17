@@ -7,7 +7,7 @@ categories = ["caching", "data-structures", "encoding"]
 description = """A library to serialize and deserialize result using serde"""
 documentation = "https://docs.rs/cdumay_result"
 edition = "2021"
-homepage =  "https://github.com/cdumay/rust-cdumay_result"
+homepage = "https://github.com/cdumay/rust-cdumay_result"
 keywords = ["Error", "serde", "Result"]
 license = "BSD-3-Clause"
 readme = "README.md"
@@ -19,7 +19,9 @@ travis-ci = { repository = "cdumay/rust-cdumay_result" }
 maintenance = { status = "as-is" }
 
 [dependencies]
-cdumay_error = "0.3.0"
+cdumay_core = { git = "https://github.com/cdumay/rust-cdumay_core" }
+cdumay_error = { git = "https://github.com/cdumay/rust-cdumay_error" }
 serde = { version = "1.0.203", features = ["derive"] }
+
+[dev-dependencies]
 serde_json = "1.0.117"
-uuid = { version = "1.8.0", features = ["v4", "serde"] }

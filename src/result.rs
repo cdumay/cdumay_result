@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter};
 use std::ops::Add;
 
 use cdumay_error::Error;
-use uuid::Uuid;
+use cdumay_core::{Uuid, Value};
 
 use crate::ResultBuilder;
 
@@ -17,7 +17,7 @@ pub struct Result {
     pub retcode: u16,
     pub stdout: Option<String>,
     pub stderr: Option<String>,
-    pub retval: BTreeMap<String, serde_json::Value>,
+    pub retval: BTreeMap<String, Value>,
 }
 
 impl IsError for Result {
@@ -84,7 +84,7 @@ impl From<Error> for Result {
 #[cfg(test)]
 mod test {
     use cdumay_error::{ErrorBuilder, GenericErrors};
-    use serde_json::Value;
+    use Value;
     use uuid::Uuid;
     use crate::JsonResult;
     use super::*;

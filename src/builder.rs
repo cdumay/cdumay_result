@@ -1,6 +1,6 @@
 use std::collections::BTreeMap;
 
-use uuid::Uuid;
+use cdumay_core::{Uuid, Value};
 
 use crate::Result;
 
@@ -9,7 +9,7 @@ pub struct ResultBuilder {
     retcode: u16,
     stdout: Option<String>,
     stderr: Option<String>,
-    retval: BTreeMap<String, serde_json::Value>,
+    retval: BTreeMap<String, Value>,
 }
 
 impl Default for ResultBuilder {
@@ -42,7 +42,7 @@ impl ResultBuilder {
         self.stderr = Some(stderr);
         self
     }
-    pub fn retval(mut self, retval: BTreeMap<String, serde_json::Value>) -> Self {
+    pub fn retval(mut self, retval: BTreeMap<String, Value>) -> Self {
         self.retval = retval;
         self
     }
@@ -62,7 +62,7 @@ impl ResultBuilder {
 mod test {
     use std::collections::BTreeMap;
 
-    use serde_json::Value;
+    use Value;
 
     use crate::builder::ResultBuilder;
 

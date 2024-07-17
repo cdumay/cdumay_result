@@ -12,12 +12,13 @@
 //! _main.rs_:
 //!
 //! ```rust
+//! extern crate cdumay_core;
 //! extern crate cdumay_result;
 //! extern crate serde_json;
 //!
 //! use cdumay_result::{ResultBuilder, JsonResult};
 //! use std::collections::BTreeMap;
-//! use serde_json::Value;
+//! use cdumay_core::Value;
 //!
 //! fn main() {
 //!     let result = ResultBuilder::default()
@@ -43,14 +44,13 @@
 //! }
 //! ```
 
+extern crate cdumay_core;
 extern crate cdumay_error;
 extern crate serde;
-extern crate serde_json;
-extern crate uuid;
 
-pub use result::Result;
-pub use jsonify::JsonResult;
 pub use builder::ResultBuilder;
+pub use jsonify::JsonResult;
+pub use result::Result;
 
 mod result;
 mod jsonify;
