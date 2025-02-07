@@ -26,6 +26,7 @@ cdumay_result = "1.0"
 serde_json = "1.0"  # For JSON serialization
 cdumay_error = "1.0"  # For error handling
 cdumay_error_standard = "1.0"  # For error example
+cdumay_context = "1.0" # For context use
 ```
 
 ### Basic Usage
@@ -46,6 +47,31 @@ let result = ResultBuilder::default()
         values.insert("count".into(), Value::U8(42.into()));
         values
     })
+    .build();
+
+// Serialize to JSON
+println!("{}", serde_json::to_string_pretty(&result).unwrap());
+```
+
+### Context Usage
+
+Here's a simple example of creating and using a successful result using `cdumay_context`:
+
+```rust
+use cdumay_result::{ResultBuilder, Result};
+use cdumay_context::Context;
+use std::collections::BTreeMap;
+use serde_value::Value;
+
+// Creating a context
+let mut context = Context::new();
+context.insert("status".into(), Value::String("completed".into()));
+context.insert("count".into(), Value::U8(42.into()));
+
+// Creating a successful result with data
+let result = ResultBuilder::default()
+    .stdout("Operation completed successfully".into())
+    .retval(context.into())
     .build();
 
 // Serialize to JSON

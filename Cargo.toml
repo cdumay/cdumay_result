@@ -27,3 +27,4 @@ uuid = { version = "1.4", features = ["v4", "serde"] }
 [dev-dependencies]
 serde_json = "1.0.117"
 cdumay_error_standard = "1.0"
+cdumay_context = "1.0"
