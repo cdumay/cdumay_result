@@ -13,11 +13,6 @@ license = "BSD-3-Clause"
 readme = "README.md"
 repository = "https://github.com/cdumay/rust-cdumay_result"
 
-[badges]
-gitlab = { repository = "cdumay/rust-cdumay_result" }
-travis-ci = { repository = "cdumay/rust-cdumay_result" }
-maintenance = { status = "as-is" }
-
 [dependencies]
 cdumay_error = "1.0"
 serde = { version = "1.0.203", features = ["derive"] }
@@ -27,4 +22,4 @@ uuid = { version = "1.4", features = ["v4", "serde"] }
 [dev-dependencies]
 serde_json = "1.0.117"
 cdumay_error_standard = "1.0"
-cdumay_context = "1.0"
+cdumay_context = "1.1"

@@ -22,12 +22,15 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
       - uses: dtolnay/rust-toolchain@stable
+      - name: Install cargo-readme
+        run: cargo install cargo-readme
       - name: Install cargo-release
         run: cargo install cargo-release
       - name: Bump version and tag release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          cargo readme > README.md
           cargo release version --execute --no-confirm patch
           cargo release commit --execute --no-confirm
           cargo release tag --execute --no-confirm
