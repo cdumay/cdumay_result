@@ -24,7 +24,7 @@
 //! serde_json = "1.0"  # For JSON serialization
 //! cdumay_error = "1.0"  # For error handling
 //! cdumay_error_standard = "1.0"  # For error example
-//! cdumay_context = "1.1" # For context use
+//! cdumay_context = "2.0" # For context use
 //! ```
 //!
 //! ## Basic Usage
@@ -57,40 +57,14 @@
 //!
 //! ```rust
 //! use cdumay_result::{ResultBuilder, Result};
-//! use cdumay_context::Context;
+//! use cdumay_context::{Context, Contextualize};
 //! use std::collections::BTreeMap;
 //! use serde::Serialize;
 //! use serde_value::Value;
 //!
-//! #[derive(Default, Serialize)]
-//! struct MyContext {
-//!     data: BTreeMap<String, Value>
-//! }
-//!
-//! impl Context for MyContext {
-//!     fn new() -> Self {
-//!         Self::default()
-//!     }
-//!
-//!     fn insert(&mut self, k: String, v: Value) {
-//!         self.data.insert(k, v);
-//!     }
-//!
-//!     fn get(&self, k: &str) -> Option<&Value> {
-//!         self.data.get(k)
-//!     }
-//!
-//!     fn extend(&mut self, data: BTreeMap<String, Value>) {
-//!         self.data.extend(data);
-//!     }
-//!
-//!     fn inner(&self) -> BTreeMap<String, Value> {
-//!         self.data.clone()
-//!     }
-//! }
 //!
 //! // Creating a context
-//! let mut context = MyContext::new();
+//! let mut context = Context::new();
 //! context.insert("status".into(), Value::String("completed".into()));
 //! context.insert("count".into(), Value::U8(42.into()));
 //!
