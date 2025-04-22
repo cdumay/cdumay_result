@@ -1,6 +1,6 @@
 [package]
 name = "cdumay_result"
-version = "1.0.3"
+version = "1.0.4"
 
 authors = ["Cédric Dumay <cedric.dumay@gmail.com>"]
 categories = ["caching", "data-structures", "encoding"]
